@@ -14,14 +14,14 @@ makeMovie = False
 startWithEmptyMap = True
 makeRandObs = False
 useMovingGoals = True
-restrictVerticalMovement = True
+restrictVerticalMovement = False
 useHierarchicalPlanning = True
 numHierLevels = 0
 
 
 percentFixedRandomObstacles = 0
 safetymargin = 1
-cX, cY, cZ = 1, 1, 2        # cX and cY currently are unused - modify computeCost if desired
+cX, cY, cZ = 1, 1, 1 #1, 1, 2  # cX and cY currently are unused - modify computeCost if desired
 heuristicScale = 1.01
 
 searchRadius = 20

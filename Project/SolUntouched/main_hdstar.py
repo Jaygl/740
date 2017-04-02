@@ -3,7 +3,7 @@ import time
 import os
 import subprocess
 import multiprocessing
-import resource
+#import resource
 from math import isinf, sqrt, pi
 import numpy as np
 import matplotlib.pyplot as plt
@@ -42,6 +42,8 @@ tic1 = time.time()
 """ Begin main algorithm """
 for idx in xrange(0, gl.numGoals):                      # for each goal
     L = fcn.setupLevels()
+    import pdb; pdb.set_trace()  # breakpoint e0a34daf //
+    
     xNew, yNew, zNew = gl.start                         # get current location
     fcn.searchAndUpdate(xNew,yNew,zNew)                 # search for obstacles
 

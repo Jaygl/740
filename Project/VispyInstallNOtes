@@ -1,0 +1,5 @@
+conda install -n py34 python=3.4 anaconda
+pip install --upgrade vispy
+conda install pyopengl
+
+This worked, mostly.
