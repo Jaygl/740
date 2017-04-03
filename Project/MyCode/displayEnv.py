@@ -1,5 +1,8 @@
+#This is to be run in python 3.4 Env with Vispy
+
 """
-View the current Environment
+Display the environment
+
 Controls:
 
 * 1  - toggle camera between first person (fly), regular 3D (turntable) and
@@ -17,7 +20,6 @@ With fly camera:
 * FC - move up-down
 * IJKL or mouse - look around
 """
-
 import PyQt5
 from itertools import cycle
 import os
@@ -45,10 +47,6 @@ volume1 = scene.visuals.Volume(vol1, parent=view.scene, threshold=0.225,
                                emulate_texture=emulate_texture)
 volume1.transform = scene.STTransform(translate=(64, 64, 0))
 
-volume2 = scene.visuals.Volume(vol2, parent=view.scene, threshold=0.2,
-                               emulate_texture=emulate_texture)
-volume2.visible = False
-
 # Create three cameras (Fly, Turntable and Arcball)
 fov = 60.
 cam1 = scene.cameras.FlyCamera(parent=view.scene, fov=fov, name='Fly')
@@ -63,7 +61,6 @@ s = STTransform(translate=(50, 50), scale=(50, 50, 50, 1))
 affine = s.as_matrix()
 axis.transform = affine
 
-
 # create colormaps that work well for translucent and additive volume rendering
 class TransFire(BaseColormap):
     glsl_map = """
@@ -71,8 +68,7 @@ class TransFire(BaseColormap):
         return vec4(pow(t, 0.5), t, t*t, max(0, t*1.05 - 0.05));
     }
     """
-
-
+    
 class TransGrays(BaseColormap):
     glsl_map = """
     vec4 translucent_grays(float t) {
@@ -121,26 +117,21 @@ def on_key_press(event):
         cmap = opaque_cmap if method in ['mip', 'iso'] else translucent_cmap
         volume1.method = method
         volume1.cmap = cmap
-        volume2.method = method
-        volume2.cmap = cmap
     elif event.text == '3':
         volume1.visible = not volume1.visible
-        volume2.visible = not volume1.visible
     elif event.text == '4':
         if volume1.method in ['mip', 'iso']:
             cmap = opaque_cmap = next(opaque_cmaps)
         else:
             cmap = translucent_cmap = next(translucent_cmaps)
         volume1.cmap = cmap
-        volume2.cmap = cmap
     elif event.text == '0':
         cam1.set_range()
         cam3.set_range()
     elif event.text != '' and event.text in '[]':
         s = -0.025 if event.text == '[' else 0.025
         volume1.threshold += s
-        volume2.threshold += s
-        th = volume1.threshold if volume1.visible else volume2.threshold
+        th = volume1.threshold
         print("Isosurface threshold: %0.3f" % th)
 
 # for testing performance

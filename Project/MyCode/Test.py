@@ -42,15 +42,13 @@ for k in range(0, len(p_x)):
 	if myEnvironment[p_x[k], p_y[k],1] < 1:
 		myEnvironment[max(p_x[k]-tw,0):min(p_x[k]+tw,xspan), max(p_y[k]-tw, 0):
 			min(p_y[k]+tw,yspan), :min(zspan,treeheights[k])] = 4#1
+		#Add Tree Tops
 		for z in range(1, int(min(treeheights[k],zspan)/2)):
 			z1 = round(z/2)
 			myEnvironment[max(p_x[k]-z1,0):min(p_x[k]+z1,xspan),
 				max(p_y[k]-z1,0):min(p_y[k]+z1,yspan), treeheights[k]-z] = 3
-#Add Tree Tops
 
-
-
-#Make a floor
+#Create a floor
 myEnvironment[:,:,0] = 1
 
 np.save('C:/Root/740/Project/Data/generatedEnvironment1.npy', myEnvironment, 1, 1)

@@ -6,6 +6,10 @@
 # vispy: gallery 2
 
 """
+#This has been hacked apart to work with my code.
+#This is to be run in python 3.4 Env with Vispy
+
+
 Example volume rendering
 
 Controls:
