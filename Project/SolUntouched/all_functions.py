@@ -957,6 +957,8 @@ class CL:   # Create level
     def pop_node(self):
         """ Remove and return lowest priority task. Raise KeyError if empty """
         while True:
+            import pdb; pdb.set_trace()  # breakpoint 768650af //
+            
             key1, key2, u = heapq.heappop(CL.U)
             if u in CL.entry_finder:
                 del CL.entry_finder[u]

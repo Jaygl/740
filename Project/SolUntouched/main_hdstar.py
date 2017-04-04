@@ -42,11 +42,10 @@ tic1 = time.time()
 """ Begin main algorithm """
 for idx in xrange(0, gl.numGoals):                      # for each goal
     L = fcn.setupLevels()
-    import pdb; pdb.set_trace()  # breakpoint e0a34daf //
     
     xNew, yNew, zNew = gl.start                         # get current location
     fcn.searchAndUpdate(xNew,yNew,zNew)                 # search for obstacles
-
+    
     while gl.start != gl.goal:
 
         """ Compute path, smooth it, make a spline, and divide into a series of adjacent points to follow """
@@ -184,8 +183,8 @@ if makeFigure:
     plt.show()
 
 
-print final_pathX
-print final_pathY
-print final_pathZ
+#print final_pathX
+#print final_pathY
+#print final_pathZ
 
 

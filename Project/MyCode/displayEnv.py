@@ -24,14 +24,34 @@ import PyQt5
 from itertools import cycle
 import os
 import numpy as np
-
+from math import floor
 from vispy import app, scene, io
 from vispy.color import get_colormaps, BaseColormap
 from vispy.visuals.transforms import STTransform
 
 # Read volume
-vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment1.npy')
+testingEnvironment = 0
+if testingEnvironment == 1:
+    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_1.npy')
+    start = (3,3,3)
+    goal = (36,36,15)
+elif testingEnvironment == 3:
+    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_3.npy')
+    start = (90,50,5)
+    goal = (450, 200, 35)
+else:
+    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment.npy')
+    start = (20, 20, 3)
+    goal = (115, 190, 5)
 
+    
+vol1[start] = 10
+vol1[goal] = 10
+for x in range(-2,2):
+        for y in range(-2,2):
+            for z in range(-2,2):
+                vol1[tuple([sum(x) for x in zip(start,(x,y,z))])] = 10
+                vol1[tuple([sum(x) for x in zip(goal,(x,y,z))])] = 10
 # Prepare canvas
 canvas = scene.SceneCanvas(keys='interactive', size=(800, 600), show=True)
 canvas.measure_fps()
