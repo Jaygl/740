@@ -1,9 +1,7 @@
 List of things to do
 
-Did the first test not work (where CL.U was empty) because the clutter was too dense and it wasn't finding successors? NOTE: it appears only 6 successors are checked, which means there is small, but reasonable, window for this to not work.
-
 Need to include the start and goal within the environment file.
 
-Seperate displayEnv and displayEnv with the path. This should not be tied together.
+Should create a planned_path(step) = path to understand the planned path at each step.
 
-Let's try a much larger environment and see what happens? Keep the clutter down to see if it just works at all. Then can amp it up a little...
+Make displayEnv amazing

@@ -30,7 +30,7 @@ from vispy.color import get_colormaps, BaseColormap
 from vispy.visuals.transforms import STTransform
 from sys import exit
 
-testingEnvironment = 1
+testingEnvironment = 4
 # Read volume
 
 #Display Path
@@ -47,6 +47,14 @@ elif testingEnvironment == 3:
     vol1[90, 50, 5] = 10
     vol1[450, 200, 35] = 10
     temp = np.load('C:/Root/740/Project/Data/Finaloutput_3.npz')
+    xpath, ypath, zpath = temp['arr_0'], temp['arr_1'], temp['arr_2']
+    for k in range(0,len(xpath)):
+        vol1[floor(xpath[k]),floor(ypath[k]),floor(zpath[k])] = 10
+elif testingEnvironment == 4:
+    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_4.npy')
+    vol1[90, 50, 5] = 10
+    vol1[450, 200, 35] = 10
+    temp = np.load('C:/Root/740/Project/Data/Finaloutput_4.npz')
     xpath, ypath, zpath = temp['arr_0'], temp['arr_1'], temp['arr_2']
     for k in range(0,len(xpath)):
         vol1[floor(xpath[k]),floor(ypath[k]),floor(zpath[k])] = 10

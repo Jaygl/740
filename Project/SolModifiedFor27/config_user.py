@@ -21,7 +21,7 @@ import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 from sys import exit
 
-testingEnvironment = 1
+testingEnvironment = 4
 
 if testingEnvironment == 1:
     vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_1.npy')
@@ -31,6 +31,10 @@ elif testingEnvironment == 3:
     vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_3.npy')
     start = (90,50,5)
     goals = np.array([[450., 200., 35.,    0.]])
+elif testingEnvironment == 4:
+    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_4.npy')
+    start = (90,50,5)
+    goals = np.array([[450., 200., 5.,    0.]])
 else:
     exit("testingEnvironment not found...")
 

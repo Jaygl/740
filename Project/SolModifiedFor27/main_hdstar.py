@@ -11,7 +11,6 @@ import config_user as gl
 import config_program
 import all_functions as fcn
 
-
 # To reload settings for multiple trials
 if gl.testingMode:
     reload(gl)
@@ -28,7 +27,6 @@ rXstart, rYstart, rZstart = gl.rXstart, gl.rYstart, gl.rZstart
 refinementDistance = gl.refinementDistance
 
 if makeMovie:   frames = []
-
 
 """ Setup abstract levels and variables for performance testing """
 #L = fcn.setupLevels()
@@ -55,6 +53,8 @@ for idx in xrange(0, gl.numGoals):                      # for each goal
         path = fcn.postSmoothPath(path)
         path = fcn.CatmullRomSpline(path)
         path = fcn.simulateUAVmovement(path)
+        #Should create a planned_path(step) = path to understand the planned path at each step.
+
 
         findPathTime = time.clock() - tic   # end timer
         time_findPath.append(findPathTime)  # record time
@@ -95,7 +95,6 @@ for idx in xrange(0, gl.numGoals):                      # for each goal
                 final_pathX.append(xNew)
                 final_pathY.append(yNew)
                 final_pathZ.append(zNew)
-
 
                 # Generate random obstacles
                 if makeRandObs:
@@ -145,7 +144,6 @@ for idx in xrange(0, gl.numGoals):                      # for each goal
 # Get averages, in milliseconds
 mean_time_findPath = 1000*sum(time_findPath) / len(time_findPath)
 
-
 def hdstar_outputs():
     return total_cost, gl.closed_list, mean_time_findPath, initialFindPathTime*1000
 
@@ -155,9 +153,6 @@ if not gl.testingMode:
     print 'Total cost: ' + str(total_cost)
     print 'Mean Path-finding Time: ' + str(mean_time_findPath) + ' ms'
     print 'Expanded nodes: ' + str(gl.closed_list)
-
-
-
 
 if makeMovie:
     # Save a few extra still frame so video doesn't end abruptly
@@ -187,5 +182,3 @@ np.savez('Finaloutput', final_pathX, final_pathY, final_pathZ)
 #print final_pathX
 #print final_pathY
 #print final_pathZ
-
-
