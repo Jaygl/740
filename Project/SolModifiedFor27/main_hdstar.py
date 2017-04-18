@@ -37,6 +37,8 @@ final_pathY = [gl.start[1]]
 final_pathZ = [gl.start[2]]
 
 tic1 = time.time()
+lifetime_path = []
+
 """ Begin main algorithm """
 for idx in xrange(0, gl.numGoals):                      # for each goal
     L = fcn.setupLevels()
@@ -54,7 +56,7 @@ for idx in xrange(0, gl.numGoals):                      # for each goal
         path = fcn.CatmullRomSpline(path)
         path = fcn.simulateUAVmovement(path)
         #Should create a planned_path(step) = path to understand the planned path at each step.
-
+        lifetime_path.append(path)
 
         findPathTime = time.clock() - tic   # end timer
         time_findPath.append(findPathTime)  # record time
@@ -178,7 +180,7 @@ if makeFigure:
     plt.show()
 
 np.savez('Finaloutput', final_pathX, final_pathY, final_pathZ)
-
+np.save('Long_path', lifetime_path, True, True)
 #print final_pathX
 #print final_pathY
 #print final_pathZ

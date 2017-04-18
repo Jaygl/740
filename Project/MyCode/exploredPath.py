@@ -28,35 +28,59 @@ from math import floor
 from vispy import app, scene, io
 from vispy.color import get_colormaps, BaseColormap
 from vispy.visuals.transforms import STTransform
+from sys import exit
 
-# Read volume
 testingEnvironment = 4
+sensor_range = 20
+# Read volume
 
+#Display Path
 if testingEnvironment == 1:
     vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_1.npy')
-    start = (3,3,3)
-    goal = (36,36,15)
+    vol1[3, 3, 3] = 10
+    vol1[36,36,15] = 10
+    temp = np.load('C:/Root/740/Project/Data/Finaloutput_1.npz')
+    xpath, ypath, zpath = temp['arr_0'], temp['arr_1'], temp['arr_2']
 elif testingEnvironment == 3:
     vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_3.npy')
-    start = (90,50,5)
-    goal = (450, 200, 35)
+    vol1[90, 50, 5] = 10
+    vol1[450, 200, 35] = 10
+    temp = np.load('C:/Root/740/Project/Data/Finaloutput_3.npz')
+    xpath, ypath, zpath = temp['arr_0'], temp['arr_1'], temp['arr_2']
 elif testingEnvironment == 4:
     vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_4.npy')
-    start = (90,50,5)
-    goal = (150, 60, 20)
+    vol1[90, 50, 5] = 10
+    vol1[450, 200, 5] = 10
+    temp = np.load('C:/Root/740/Project/Data/Finaloutput_4.npz')
+    xpath, ypath, zpath = temp['arr_0'], temp['arr_1'], temp['arr_2']
 else:
-    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment.npy')
-    start = (20, 20, 3)
-    goal = (115, 190, 5)
+    exit("testingEnvironment not found...")
 
-    
-vol1[start] = 10
-vol1[goal] = 10
-for x in range(-2,2):
-        for y in range(-2,2):
-            for z in range(-2,2):
-                vol1[tuple([sum(x) for x in zip(start,(x,y,z))])] = 10
-                vol1[tuple([sum(x) for x in zip(goal,(x,y,z))])] = 10
+(xSize, ySize, zSize) = vol1.shape
+xpath2, ypath2, zpath2 = list(xpath), list(ypath), list(zpath)
+for k in range(0, len(xpath)):
+    xpath2[k], ypath2[k], zpath2[k] = floor(xpath2[k]), floor(ypath2[k]), floor(zpath2[k])
+    vol1[xpath2[k],ypath2[k],zpath2[k]] = 10
+
+print(len(xpath2))
+#Get the visibility map that the UAV has seen
+vol2 = np.zeros_like(vol1)
+for k in range(0, len(xpath2)):
+    vol2[max(xpath2[k]-sensor_range,0):min(xpath2[k]+sensor_range, xSize), 
+        max(ypath2[k]-sensor_range,0):min(ypath2[k]+sensor_range, ySize),
+        max(zpath2[k]-sensor_range,0):min(zpath2[k]+sensor_range, zSize)] = vol1[max(xpath2[k]-sensor_range,0):min(xpath2[k]+sensor_range, xSize), 
+        max(ypath2[k]-sensor_range,0):min(ypath2[k]+sensor_range, ySize),
+        max(zpath2[k]-sensor_range,0):min(zpath2[k]+sensor_range, zSize)]
+
+#for k in range(0, 5):
+#    for x in range(-sensor_range, sensor_range):
+#        for y in range(-sensor_range, sensor_range):
+#            for z in range(-sensor_range,sensor_range):
+#                vol2[xpath2[k]+x, ypath2[k]+y, zpath2[k]+z] = vol1[xpath2[k]+x, ypath2[k]+y, zpath2[k]+z]
+vol3 = vol1
+vol1 = vol2
+
+
 # Prepare canvas
 canvas = scene.SceneCanvas(keys='interactive', size=(800, 600), show=True)
 canvas.measure_fps()

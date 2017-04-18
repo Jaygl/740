@@ -30,7 +30,7 @@ from vispy.color import get_colormaps, BaseColormap
 from vispy.visuals.transforms import STTransform
 
 # Read volume
-testingEnvironment = 4
+testingEnvironment = 5
 if testingEnvironment == 1:
     vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_1.npy')
     start = (3,3,3)
@@ -40,6 +40,10 @@ elif testingEnvironment == 3:
     start = (90,50,5)
     goal = (450, 200, 35)
 elif testingEnvironment == 4:
+    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_4.npy')
+    start = (90,50,5)
+    goal = (450, 200, 5)
+elif testingEnvironment == 5:
     vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_4.npy')
     start = (90,50,5)
     goal = (450, 200, 5)

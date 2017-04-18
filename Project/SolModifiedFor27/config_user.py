@@ -58,7 +58,7 @@ cX, cY, cZ = 1, 1, 1 #1, 1, 2  # cX and cY currently are unused - modify compute
 heuristicScale = 1.01
 
 searchRadius = 20
-refinementDistance = math.ceil(searchRadius * 1)    # must be an integer
+refinementDistance = math.ceil(searchRadius * .5) # 1)   # must be an integer
 t_max = float('inf')             # Max time to spend on path-finding, in milliseconds. Enter inf to prevent restriction
 
 # Configure Moving Goals

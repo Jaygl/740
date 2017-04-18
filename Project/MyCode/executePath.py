@@ -30,7 +30,7 @@ from vispy.color import get_colormaps, BaseColormap
 from vispy.visuals.transforms import STTransform
 from sys import exit
 
-testingEnvironment = 4
+testingEnvironment = 5
 sensor_range = 20
 # Read volume
 
@@ -53,11 +53,22 @@ elif testingEnvironment == 4:
     vol1[450, 200, 5] = 10
     temp = np.load('C:/Root/740/Project/Data/Finaloutput_4.npz')
     xpath, ypath, zpath = temp['arr_0'], temp['arr_1'], temp['arr_2']
+elif testingEnvironment == 5:
+    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_4.npy')
+    vol1[90, 50, 5] = 10
+    vol1[450, 200, 5] = 10
+    temp = np.load('C:/Root/740/Project/Data/Finaloutput_5.npz')
+    xpath, ypath, zpath = temp['arr_0'], temp['arr_1'], temp['arr_2']
+    temp = np.load('C:/Root/740/Project/Data/Long_path_5.npy', encoding='bytes')
+    cpath = temp
+    import pdb; pdb.set_trace()  # breakpoint c8222378 //
+
 else:
     exit("testingEnvironment not found...")
 
 (xSize, ySize, zSize) = vol1.shape
 xpath2, ypath2, zpath2 = list(xpath), list(ypath), list(zpath)
+
 for k in range(0, len(xpath)):
     xpath2[k], ypath2[k], zpath2[k] = floor(xpath2[k]), floor(ypath2[k]), floor(zpath2[k])
     vol1[xpath2[k],ypath2[k],zpath2[k]] = 10

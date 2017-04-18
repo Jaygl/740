@@ -32,6 +32,7 @@ if makeMovie:   frames = []
 L = fcn.CL(0, sizeX, sizeY, sizeZ)
 time_findPath = []
 total_cost = 0
+tic1 = time.time()
 
 
 """ Begin main algorithm """
@@ -123,12 +124,12 @@ mean_time_findPath = 1000*sum(time_findPath)/len(time_findPath)
 
 if not gl.testingMode:
     print 'Run succeeded!\n'
-    print 'Elapsed time: ' + str(time.time() - tic) + ' seconds'
+    print 'Elapsed time: ' + str(time.time() - tic1) + ' seconds'
     print 'Total cost: ' + str(total_cost)
-    print 'Path-finding Time: ' + str(mean_time_findPath)
+    print 'Path-finding Time: ' + str(mean_time_findPath) + ' ms'
     print 'Expanded nodes: ' + str(gl.closed_list)
-
-
+    print 'time_findPath Length: ' + str(len(time_findPath))
+    print 'Path Length: ' + str(len(path))
 
 def dstar_outputs():
     return total_cost, gl.closed_list, mean_time_findPath, initialFindPathTime
