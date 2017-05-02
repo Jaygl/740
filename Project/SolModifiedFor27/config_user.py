@@ -21,22 +21,57 @@ import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 from sys import exit
 
-testingEnvironment = 4
+MAP = 4
+TARGET = 3
 
-if testingEnvironment == 1:
+if MAP == 1:
     vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_1.npy')
-    start = (20, 20, 3)
-    goals = np.array([[115., 190., 5.,    0.]]) # goal coordinates
-elif testingEnvironment == 3:
+elif MAP == 3:
     vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_3.npy')
-    start = (90,50,5)
-    goals = np.array([[450., 200., 35.,    0.]])
-elif testingEnvironment == 4:
+elif MAP == 4:  # <<< THIS IS (1) and (2)
     vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_4.npy')
-    start = (90,50,5)
-    goals = np.array([[450., 200., 5.,    0.]])
+elif MAP == 5:  #Maze 1
+    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_5.npy')
+elif MAP == 6:  #Maze 2
+    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_6.npy')
+elif MAP == 7:  # <<< THIS IS (3)
+    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_7.npy')
+elif MAP == 8:  
+    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_8.npy')
 else:
-    exit("testingEnvironment not found...")
+    exit("MAP not found...")
+
+if TARGET == 1:
+    start = (20, 20, 3)
+    goal = (115, 190, 5)
+    goals = np.array([[115., 190., 5.,    0.]]) # goal coordinates
+elif TARGET == 2:  # <<< THIS IS (1)
+    start = (90, 50, 5)
+    goal = (450, 200, 35)
+    goals = np.array([[450., 200., 35.,    0.]])
+elif TARGET == 3:  # <<< THIS IS (2)
+    start = (90, 50, 5)
+    goal = (450, 200, 5)
+    goals = np.array([[450., 200., 5.,    0.]])
+elif TARGET == 4:
+    start = (9,78,1)
+    goal = (81,45,1)
+    goals = np.array([[81., 45., 1.,    0.]])
+elif TARGET == 5:  # <<< THIS IS MAZE
+    start = (12,105,2)
+    goal = (108,60,2)
+    goals = np.array([[108., 60., 2.,    0.]])
+elif TARGET == 6:  # <<< THIS IS (3)
+    start = (25,218,5)
+    goal = (200,50,5)
+    goals = np.array([[200., 50., 5.,    0.]])
+elif TARGET == 7:
+    start = (12,105,25)
+    goal = (108,60,25)
+    goals = np.array([[108., 60., 25.,    0.]])
+else:
+    exit('That target location is undefined!')
+
 
 sizeX, sizeY, sizeZ = vol1.shape 
 #mapscale probably needs to be set to 1 (1)

@@ -18,8 +18,6 @@ try:
 except ImportError:
     pass
 
-
-
 # Creating local copies of constants
 sizeX, sizeY, sizeZ = gl.sizeX, gl.sizeY, gl.sizeZ
 cX, cY, cZ, zMove = gl.cX, gl.cY, gl.cZ, sizeX*sizeY*sizeZ
@@ -38,8 +36,6 @@ alpha, splinePoints = gl.alpha, gl.splinePoints
 pathComputationLimit = gl.t_max / 1000          # convert to seconds
 zf1, zf2 = gl.zf1, gl.zf2
 #maxTurnAngle = gl.maxTurnAngle
-
-
 
 def succ(s):
     """ Find which nodes can be moved to next from node s. Used to randomly move any moving goals """
@@ -161,11 +157,15 @@ def heuristic(us,ut):
     """
     sx, sy, sz = us
     tx, ty, tz = ut
-
     dx, dy, dz = sx-tx, sy-ty, sz-tz
-
     return heuristicScale * sqrt(dx*dx + dy*dy + dz*dz)
 
+    dv = (abs(sx-tx), abs(sy-ty), abs(sz-tz))
+    triples = min(dv);
+    doubles = min([dv[x] for x in [0,1,2] if x != dv.index(triples)]) - triples
+    temp = sum(dv) - (3 - sqrt(3))*triples - (2 - sqrt(2))*doubles
+
+    return heuristicScale * temp
 
 def lineOfSight(*args):
     """
@@ -955,11 +955,12 @@ class CL:   # Create level
 
     def pop_node(self):
         """ Remove and return lowest priority task. Raise KeyError if empty """
-        while True:
+        while len(CL.U) > 0: #True: 
             key1, key2, u = heapq.heappop(CL.U)
             if u in CL.entry_finder:
                 del CL.entry_finder[u]
                 return key1, key2, u
+        #import pdb; pdb.set_trace()  # breakpoint 8a8730f8 //
         raise KeyError('Attempted to pop from an empty priority queue')
 
 

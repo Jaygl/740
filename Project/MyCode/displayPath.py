@@ -29,49 +29,29 @@ from vispy import app, scene, io
 from vispy.color import get_colormaps, BaseColormap
 from vispy.visuals.transforms import STTransform
 from sys import exit
-
-testingEnvironment = 5
-# Read volume
-
-#Display Path
-if testingEnvironment == 1:
-    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_1.npy')
-    vol1[3, 3, 3] = 10
-    vol1[36,36,15] = 10
-    temp = np.load('C:/Root/740/Project/Data/Finaloutput_1.npz')
-    xpath, ypath, zpath = temp['arr_0'], temp['arr_1'], temp['arr_2']
-    for k in range(0,len(xpath)):
-        vol1[floor(xpath[k]),floor(ypath[k]),floor(zpath[k])] = 10
-elif testingEnvironment == 3:
-    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_3.npy')
-    vol1[90, 50, 5] = 10
-    vol1[450, 200, 35] = 10
-    temp = np.load('C:/Root/740/Project/Data/Finaloutput_3.npz')
-    xpath, ypath, zpath = temp['arr_0'], temp['arr_1'], temp['arr_2']
-    for k in range(0,len(xpath)):
-        vol1[floor(xpath[k]),floor(ypath[k]),floor(zpath[k])] = 10
-elif testingEnvironment == 4:
-    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_4.npy')
-    vol1[90, 50, 5] = 10
-    vol1[450, 200, 35] = 10
-    temp = np.load('C:/Root/740/Project/Data/Finaloutput_4.npz')
-    xpath, ypath, zpath = temp['arr_0'], temp['arr_1'], temp['arr_2']
-    for k in range(0,len(xpath)):
-        vol1[floor(xpath[k]),floor(ypath[k]),floor(zpath[k])] = 10
-elif testingEnvironment == 5:
-    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_4.npy')
-    vol1[90, 50, 5] = 10
-    vol1[450, 200, 35] = 10
-    temp = np.load('C:/Root/740/Project/Data/AstarOutput.npz')
-    xpath, ypath, zpath = temp['arr_0'], temp['arr_1'], temp['arr_2']
-    for k in range(0,len(xpath)):
-        vol1[floor(xpath[k]),floor(ypath[k]),floor(zpath[k])] = 10
+import fileIO as fl
+filename = 'Finaloutput_HD_4_3_1'
+#filename = 'Finaloutput_A_4_2_1'
+#filename = 'Finaloutput_HD_4_2_1'
+#filename = 'Finaloutput_A_5_4_1'
+#filename = 'Finaloutput_HD_7_6_1'
+alg = filename.split('_')[1]
+if alg == 'A':
+    JUMPSIZE = 8
 else:
-    exit("testingEnvironment not found...")
+    JUMPSIZE = 2
+
+vol1, xpath, ypath, zpath, time_findPath, start, goal, cpath, cpos = fl.load_all(filename)
+
+vol1[(start)] = 10
+vol1[(goal)] = 10
+for k in range(0,len(xpath)):
+    vol1[floor(xpath[k]),floor(ypath[k]),floor(zpath[k])] = 10
+
 # Prepare canvas
 canvas = scene.SceneCanvas(keys='interactive', size=(800, 600), show=True)
 canvas.measure_fps()
-
+xSize,ySize,zSize =vol1.shape
 # Set up a viewbox to display the image with interactive pan/zoom
 view = canvas.central_widget.add_view()
 
@@ -81,13 +61,13 @@ emulate_texture = False
 # Create the volume visuals, only one is visible
 volume1 = scene.visuals.Volume(vol1, parent=view.scene, threshold=0.225,
                                emulate_texture=emulate_texture)
-volume1.transform = scene.STTransform(translate=(64, 64, 0))
+volume1.transform = scene.STTransform(translate=(0, 0, 0))
 
 # Create three cameras (Fly, Turntable and Arcball)
 fov = 60.
 cam1 = scene.cameras.FlyCamera(parent=view.scene, fov=fov, name='Fly')
 cam2 = scene.cameras.TurntableCamera(parent=view.scene, fov=fov,
-                                     name='Turntable')
+                center=(0, ySize/2, xSize/2),name='Turntable')
 cam3 = scene.cameras.ArcballCamera(parent=view.scene, fov=fov, name='Arcball')
 view.camera = cam2  # Select turntable at first
 
@@ -161,6 +141,18 @@ def on_key_press(event):
         else:
             cmap = translucent_cmap = next(translucent_cmaps)
         volume1.cmap = cmap
+    elif event.text == '5':
+        cam2.elevation += 5
+        axis.update()
+    elif event.text == '6':
+        cam2.elevation -= 5
+        axis.update()
+    elif event.text == '7':
+        cam2.azimuth += 5
+        axis.update()
+    elif event.text == '8':
+        cam2.azimuth -= 5
+        axis.update()
     elif event.text == '0':
         cam1.set_range()
         cam3.set_range()

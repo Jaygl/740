@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import config_user as gl
 import config_program
 import all_functions as fcn
-
+import fileIO as fl
 # To reload settings for multiple trials
 if gl.testingMode:
     reload(gl)
@@ -38,7 +38,7 @@ final_pathZ = [gl.start[2]]
 
 tic1 = time.time()
 lifetime_path = []
-
+lifetime_pos = []
 """ Begin main algorithm """
 for idx in xrange(0, gl.numGoals):                      # for each goal
     L = fcn.setupLevels()
@@ -51,12 +51,10 @@ for idx in xrange(0, gl.numGoals):                      # for each goal
         """ Compute path, smooth it, make a spline, and divide into a series of adjacent points to follow """
         tic = time.clock()    # start timer
 
-        path = fcn.findPath(L)
-        path = fcn.postSmoothPath(path)
-        path = fcn.CatmullRomSpline(path)
-        path = fcn.simulateUAVmovement(path)
-        #Should create a planned_path(step) = path to understand the planned path at each step.
-        lifetime_path.append(path)
+        path = fcn.findPath(L)        
+        #path = fcn.postSmoothPath(path)
+        #path = fcn.CatmullRomSpline(path)
+        path = fcn.simulateUAVmovement(path)      
 
         findPathTime = time.clock() - tic   # end timer
         time_findPath.append(findPathTime)  # record time
@@ -69,16 +67,22 @@ for idx in xrange(0, gl.numGoals):                      # for each goal
         validPath = True                    # indicates whether or not path being followed is still valid
 
         while not goalMoved and validPath and gl.start != gl.goal and path:
-
+            #Should create a planned_path(step) = path to understand the planned path at each step.
+            temp_path = path[:]
+            temp_path.append((final_pathX[-1], final_pathY[-1], final_pathZ[-1]))
+            lifetime_path.append(temp_path)
+            #lifetime_pos.append((final_pathX[-1], final_pathY[-1], final_pathZ[-1]))
+            lifetime_pos.append(len(final_pathX))
             # Follow those points until path is invalidated or we reach end of refinement region
             for point in path:
 
                 # Save current position, then move to next point
                 xOld, yOld, zOld = xNew, yNew, zNew
                 xNew, yNew, zNew = path.pop()
+                #print (xNew,yNew,zNew)
+
                 gl.oldstart = gl.start
                 gl.start = (round(xNew), round(yNew), round(zNew))   # update start coordinate
-
                 # Update distance from start
                 dx, dy, dz = xOrig-xNew, yOrig-yNew, zOrig-zNew
                 dfs = sqrt(dx**2 + dy**2 + dz**2)
@@ -154,6 +158,9 @@ if not gl.testingMode:
     print 'Elapsed time: ' + str(time.time() - tic1) + ' seconds'
     print 'Total cost: ' + str(total_cost)
     print 'Mean Path-finding Time: ' + str(mean_time_findPath) + ' ms'
+    print 'Min Path-finding Time: ' + str(1000* min(time_findPath)) + ' ms'
+    print 'Max Path-finding Time: ' + str(1000* max(time_findPath)) + ' ms'
+    print 'Initial Path-finding Time: ' + str(1000*initialFindPathTime) + ' ms'
     print 'Expanded nodes: ' + str(gl.closed_list)
 
 if makeMovie:
@@ -179,8 +186,13 @@ if makeFigure:
     print 'Figure is open. Close figure to end script'
     plt.show()
 
-np.savez('Finaloutput', final_pathX, final_pathY, final_pathZ)
-np.save('Long_path', lifetime_path, True, True)
+#fl.save_all('HD', gl.MAP, gl.TARGET, final_pathX, final_pathY, final_pathZ, time_findPath, lifetime_path, lifetime_pos)
+
+
+#np.savez('Finaloutput', final_pathX, final_pathY, final_pathZ, time_findPath)
+#np.save('Long_path', lifetime_path, True, True)
+#np.save('Long_pos', lifetime_pos, True, True)
+
 #print final_pathX
 #print final_pathY
 #print final_pathZ

@@ -1,7 +1,44 @@
-List of things to do
+List of things to do:
 
-Need to include the start and goal within the environment file.
+>>>>> STANDARD TESTING ACROSS ALL FUNCTIONS
+ALGORITHM > MAP > TARGET > PERFORMANCE > LONGPATH 
+	>>> Algorithm used = ALGORITHM
+	>>> Testing Environment = MAP
+	>>> Start and goal = TARGET
+	>>> Performance metrics = PERFORMANCE
 
-Should create a planned_path(step) = path to understand the planned path at each step.
+		ALGORITHM
+>>>>> Real-Time A* example
+>>>>> Should create a planned_path(step) = path to understand the planned path at each step.
+>>>>> Run A* with euclidean distance over night, just to see expanded node size >>>>>> IT iS HUGE AND DOESN'T FINISH
+>>>>> Maybe try the crossproduct? NAH
+>>>>> Try a weighted heuristic? Weight by straightline distance perhaps?
+>>>>> Only solve the step by step for A*, don't need the full solution...
+-Different Heuristics for A* algorithm?
+-Incorporate my heuristic into HD*
+-Also consider shortpath generation, i.e. only to the edge of visible
+-Try increasing Hierarchical levels
 
-Make displayEnv amazing
+		DISPLAY 
+>>>>> Display a partial run with the planned_path plotted...
+>>>>> Adjust centerpoint of turntable camera? 
+>>>>> Step through each point along the path....
+- Set transparency/color for the volume
+- Ghost all unseen objects?
+
+		RESULTS
+- GO TRY THIS ON THE ACTUAL PROJECTOR AND SEE HOW IT LOOKS...
+- Environment > Execute path
+- "2D" Maze examples, demonstrate real-time vs. not real-time
+- Demo environments of interest... (environment > execute path)
+- Basic analysis of the pathplanning time for each...
+- Performance metrics of A* and HD* in many environments, graphs
+- Develop really good display characteristics for the demo
+- HOW DOES CHANGING ALPHA AND BETA CHANGE PLANNING TIME
+
+
+		FUTURE IMPROVEMENTS
+Possible improvements
+-"This and searchAndUpdate are the major bottlenecks"
+-Don't initialize every node in the graph, until new node encountered
+-all_functions pop_node SUGGESTED CHANGES

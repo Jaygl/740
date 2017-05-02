@@ -1,0 +1,10 @@
+
+filename = 'FinalOutput_HD_4_3_1_1'
+
+_, ALGORITHM, MAP, TARGET, PERFORMANCE, LONGPATH = filename.split('_')
+MAP, TARGET, PERFORMANCE, LONGPATH = int(MAP), int(TARGET), int(PERFORMANCE), int(LONGPATH)
+
+if ALGORITHM == 'HD':
+	
+
+

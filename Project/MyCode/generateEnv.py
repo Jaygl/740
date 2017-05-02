@@ -8,8 +8,8 @@ from math import ceil
 #Show edges perhaps?
 
 #Initialize the Environment
-xspan, yspan, zspan = 250, 250, 50
-numtrees = 250
+xspan, yspan, zspan = 250, 250, 150
+numtrees = 200
 
 myEnvironment = np.zeros((xspan, yspan,zspan),int)	
 
@@ -17,7 +17,7 @@ myEnvironment = np.zeros((xspan, yspan,zspan),int)
 numBuildings = 3
 buildingl = np.random.randint(round(xspan/10), round(xspan/5), numBuildings)
 buildingw = np.random.randint(round(yspan/10), round(yspan/5), numBuildings)
-buildingh = np.random.randint(round(zspan/3), round(zspan*1.25), numBuildings)
+buildingh = np.random.randint(round(zspan), round(zspan*1.25), numBuildings)
 p_x = np.random.permutation(xspan)
 p_y = np.random.permutation(yspan)
 for k in range(0, len(buildingw)):
@@ -34,7 +34,9 @@ p_y = np.random.permutation(yspan)
 p_x = p_x[:numtrees-1]
 p_y = p_y[:numtrees-1]
 #Create Tree Trunk
-treeheights = np.random.randint(round(zspan/3), zspan, numtrees)
+#treeheights = np.random.randint(round(zspan/3), zspan, numtrees)
+treeheights = np.random.randint(round(50/3), 70, numtrees)
+
 for k in range(0, len(p_x)):
 	if treeheights[k] < 20:
 		tw = 0
@@ -55,7 +57,7 @@ for k in range(0, len(p_x)):
 #Create a floor
 myEnvironment[:,:,0] = 1
 
-np.save('C:/Root/740/Project/Data/generatedEnvironment.npy', myEnvironment, 1, 1)
+np.save('C:/Root/740/Project/Data/generatedEnvironment_7.npy', myEnvironment, 1, 1)
 
 #start = (3, 3, 3)
 #goal = np.array()

@@ -11,7 +11,6 @@ import all_functions as fcn
 sizeX, sizeY, sizeZ, zMove = gl.sizeX, gl.sizeY, gl.sizeZ, gl.sizeX * gl.sizeY
 rXstart, rYstart, rZstart, rXdim, rYdim, rZdim = gl.rXstart, gl.rYstart, gl.rZstart, gl.rXdim, gl.rYdim, gl.rZdim
 
-
 # Add moving goals to goals array
 if gl.initX:
     newgoals = np.zeros((len(gl.initX), 4))
@@ -32,7 +31,6 @@ for i in xrange(0, gl.numGoals):
 
 goalindex = hyp.index(min(hyp))
 gl.goal = (gl.goals[goalindex, 0], gl.goals[goalindex, 1], gl.goals[goalindex, 2])
-
 
 # Ensure start coordinate are valid
 if gl.start[0]>sizeX or gl.start[1]>sizeY or gl.start[2]>sizeZ or gl.start[0]<1 or gl.start[1]<1 or gl.start[2]<1:
@@ -118,7 +116,6 @@ for i in xrange(0,len(rXstart)):
 gl.obstacles = []
 xLoc, yLoc, zLoc = np.where(gl.vol1 > 0)
 gl.obstacles.extend(zip(xLoc, yLoc, zLoc))
-
 gl.number_of_obstacles = len(gl.obstacles)
 
 # Update cost matrix if needed

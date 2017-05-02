@@ -43,20 +43,37 @@ elif testingEnvironment == 3:
 elif testingEnvironment == 4:
     vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_4.npy')
     start = (90,50,5)
-    goal = (150, 60, 20)
+    goal = (450, 200, 35)
+elif testingEnvironment == 5:
+    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_5.npy')
+    start = (9,78,1)
+    goal = (81,45,1)
+elif testingEnvironment == 6:
+    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_6.npy')
+    start = (25,218,1)
+    goal = (225,125,1)
+elif testingEnvironment == 7:
+    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_7.npy')
+    start = (25,218,5)
+    goal = (200,50,5)
+elif testingEnvironment == 8:
+    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_8.npy')
+    start = (12,105,25)
+    goal = (108,60,25)
 else:
     vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment.npy')
     start = (20, 20, 3)
-    goal = (115, 190, 5)
+    goal = (200, 220, 5)
 
-    
-vol1[start] = 10
-vol1[goal] = 10
-for x in range(-2,2):
-        for y in range(-2,2):
-            for z in range(-2,2):
-                vol1[tuple([sum(x) for x in zip(start,(x,y,z))])] = 10
-                vol1[tuple([sum(x) for x in zip(goal,(x,y,z))])] = 10
+xSize, ySize, zSize = vol1.shape
+
+s1,s2,s3 = start
+g1,g2,g3 = goal
+
+vol1[s1-2:s1+2, s2-2:s2+2, s3-2:s3+2] = 10
+vol1[g1-2:g1+2, g2-2:g2+2, g3-2:g3+2] = 10
+
+
 # Prepare canvas
 canvas = scene.SceneCanvas(keys='interactive', size=(800, 600), show=True)
 canvas.measure_fps()
@@ -70,13 +87,13 @@ emulate_texture = False
 # Create the volume visuals, only one is visible
 volume1 = scene.visuals.Volume(vol1, parent=view.scene, threshold=0.225,
                                emulate_texture=emulate_texture)
-volume1.transform = scene.STTransform(translate=(64, 64, 0))
+volume1.transform = scene.STTransform(translate=(20, 20, 0))
 
 # Create three cameras (Fly, Turntable and Arcball)
 fov = 60.
 cam1 = scene.cameras.FlyCamera(parent=view.scene, fov=fov, name='Fly')
 cam2 = scene.cameras.TurntableCamera(parent=view.scene, fov=fov,
-                                     name='Turntable')
+            center=(0, ySize/2, xSize/2),name='Turntable')
 cam3 = scene.cameras.ArcballCamera(parent=view.scene, fov=fov, name='Arcball')
 view.camera = cam2  # Select turntable at first
 
@@ -150,6 +167,18 @@ def on_key_press(event):
         else:
             cmap = translucent_cmap = next(translucent_cmaps)
         volume1.cmap = cmap
+    elif event.text == '5':
+        cam2.elevation += 5
+        axis.update()
+    elif event.text == '6':
+        cam2.elevation -= 5
+        axis.update()
+    elif event.text == '7':
+        cam2.azimuth += 5
+        axis.update()
+    elif event.text == '8':
+        cam2.azimuth -= 5
+        axis.update()
     elif event.text == '0':
         cam1.set_range()
         cam3.set_range()

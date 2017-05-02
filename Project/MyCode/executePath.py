@@ -9,7 +9,7 @@ Controls:
        arcball
 * 2  - toggle between volume rendering methods
 * 3  - toggle between stent-CT / brain-MRI image
-* 4  - toggle between colormaps
+* 5  - toggle between colormaps
 * 0  - reset cameras
 * [] - decrease/increase isosurface threshold
 
@@ -29,67 +29,59 @@ from vispy import app, scene, io
 from vispy.color import get_colormaps, BaseColormap
 from vispy.visuals.transforms import STTransform
 from sys import exit
+import fileIO as fl
+import matplotlib.pyplot as plt
 
-testingEnvironment = 5
 sensor_range = 20
 # Read volume
+#filename = 'FinalOutput_HD_MAP_TARGET_LONGPATH'
+
+#filename = 'Finaloutput_A_4_2_1'
+#filename = 'Finaloutput_A_5_4_1'
+
+
+#DEMOS
+#filename = 'Finaloutput_HD_4_2_1' #1
+filename = 'Finaloutput_HD_4_3_1'
+
+#filename = 'Finaloutput_HD_7_6_1' #3
+#filename = 'Finaloutput_A_6_5_1' #MAZE
+
+alg = filename.split('_')[1]
+if alg == 'A':
+    JUMPSIZE = 8
+else:
+    JUMPSIZE = 2
+
+vol1, xpath, ypath, zpath, time_findPath, start, goal, cpath, cpos = fl.load_all(filename)
+s1,s2,s3 = start
+g1,g2,g3 = goal
 
 #Display Path
-if testingEnvironment == 1:
-    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_1.npy')
-    vol1[3, 3, 3] = 10
-    vol1[36,36,15] = 10
-    temp = np.load('C:/Root/740/Project/Data/Finaloutput_1.npz')
-    xpath, ypath, zpath = temp['arr_0'], temp['arr_1'], temp['arr_2']
-elif testingEnvironment == 3:
-    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_3.npy')
-    vol1[90, 50, 5] = 10
-    vol1[450, 200, 35] = 10
-    temp = np.load('C:/Root/740/Project/Data/Finaloutput_3.npz')
-    xpath, ypath, zpath = temp['arr_0'], temp['arr_1'], temp['arr_2']
-elif testingEnvironment == 4:
-    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_4.npy')
-    vol1[90, 50, 5] = 10
-    vol1[450, 200, 5] = 10
-    temp = np.load('C:/Root/740/Project/Data/Finaloutput_4.npz')
-    xpath, ypath, zpath = temp['arr_0'], temp['arr_1'], temp['arr_2']
-elif testingEnvironment == 5:
-    vol1 = np.load('C:/Root/740/Project/Data/generatedEnvironment_4.npy')
-    vol1[90, 50, 5] = 10
-    vol1[450, 200, 5] = 10
-    temp = np.load('C:/Root/740/Project/Data/Finaloutput_5.npz')
-    xpath, ypath, zpath = temp['arr_0'], temp['arr_1'], temp['arr_2']
-    temp = np.load('C:/Root/740/Project/Data/Long_path_5.npy', encoding='bytes')
-    cpath = temp
-    import pdb; pdb.set_trace()  # breakpoint c8222378 //
-
-else:
-    exit("testingEnvironment not found...")
 
 (xSize, ySize, zSize) = vol1.shape
 xpath2, ypath2, zpath2 = list(xpath), list(ypath), list(zpath)
 
 for k in range(0, len(xpath)):
     xpath2[k], ypath2[k], zpath2[k] = floor(xpath2[k]), floor(ypath2[k]), floor(zpath2[k])
-    vol1[xpath2[k],ypath2[k],zpath2[k]] = 10
 
-print(len(xpath2))
+CURRENTPOINT = 0
+PATHPOS = cpos[CURRENTPOINT]
+
 #Get the visibility map that the UAV has seen
 vol2 = np.zeros_like(vol1)
-for k in range(0, len(xpath2)):
+for k in range(0, PATHPOS):
     vol2[max(xpath2[k]-sensor_range,0):min(xpath2[k]+sensor_range, xSize), 
         max(ypath2[k]-sensor_range,0):min(ypath2[k]+sensor_range, ySize),
         max(zpath2[k]-sensor_range,0):min(zpath2[k]+sensor_range, zSize)] = vol1[max(xpath2[k]-sensor_range,0):min(xpath2[k]+sensor_range, xSize), 
         max(ypath2[k]-sensor_range,0):min(ypath2[k]+sensor_range, ySize),
         max(zpath2[k]-sensor_range,0):min(zpath2[k]+sensor_range, zSize)]
+vol2[s1-2:s1+2, s2-2:s2+2, s3-2:s3+2] = 10
+vol2[g1-2:g1+2, g2-2:g2+2, g3-2:g3+2] = 10
+#Show the path the UAV has flown so far
+for k in range(0, PATHPOS):
+    vol2[xpath2[k],ypath2[k],zpath2[k]] = 10
 
-#for k in range(0, 5):
-#    for x in range(-sensor_range, sensor_range):
-#        for y in range(-sensor_range, sensor_range):
-#            for z in range(-sensor_range,sensor_range):
-#                vol2[xpath2[k]+x, ypath2[k]+y, zpath2[k]+z] = vol1[xpath2[k]+x, ypath2[k]+y, zpath2[k]+z]
-vol3 = vol1
-vol1 = vol2
 
 
 # Prepare canvas
@@ -102,22 +94,34 @@ view = canvas.central_widget.add_view()
 # Set whether we are emulating a 3D texture
 emulate_texture = False
 
+#JUST FOR TESTING VIEW ANGLES
+#vol2 = np.ones_like(vol2)
+
 # Create the volume visuals, only one is visible
-volume1 = scene.visuals.Volume(vol1, parent=view.scene, threshold=0.225,
+volume1 = scene.visuals.Volume(vol2, parent=view.scene, threshold=0.225,
                                emulate_texture=emulate_texture)
-volume1.transform = scene.STTransform(translate=(64, 64, 0))
+#ORIGINAL
+#volume1.transform = scene.STTransform(translate=(64, 64, 0))
+#Scaling?
+#Original
+#volume1.transform = scene.STTransform(translate=(xSize/2, ySize/2, zSize/2))
+volume1.transform = scene.STTransform(translate=(0/2, 0/2, 0/2))
 
 # Create three cameras (Fly, Turntable and Arcball)
 fov = 60.
 cam1 = scene.cameras.FlyCamera(parent=view.scene, fov=fov, name='Fly')
+#cam2 = scene.cameras.TurntableCamera(parent=view.scene, fov=fov,
+#            center=(xSize/2+200, ySize/2, zSize/2),name='Turntable')
 cam2 = scene.cameras.TurntableCamera(parent=view.scene, fov=fov,
-                                     name='Turntable')
+            center=(0, ySize/2, xSize/2),name='Turntable')
 cam3 = scene.cameras.ArcballCamera(parent=view.scene, fov=fov, name='Arcball')
 view.camera = cam2  # Select turntable at first
 
 # Create an XYZAxis visual
 axis = scene.visuals.XYZAxis(parent=view)
 s = STTransform(translate=(50, 50), scale=(50, 50, 50, 1))
+#s = STTransform(translate=(250, 100), scale=(50, 50, 50, 1))
+
 affine = s.as_matrix()
 axis.transform = affine
 
@@ -157,11 +161,10 @@ def on_mouse_move(event):
         axis.transform.translate((50., 50.))
         axis.update()
 
-
 # Implement key presses
 @canvas.events.key_press.connect
 def on_key_press(event):
-    global opaque_cmap, translucent_cmap
+    global opaque_cmap, translucent_cmap, CURRENTPOINT,volume1
     if event.text == '1':
         cam_toggle = {cam1: cam2, cam2: cam3, cam3: cam1}
         view.camera = cam_toggle.get(view.camera, cam2)
@@ -178,8 +181,58 @@ def on_key_press(event):
         volume1.method = method
         volume1.cmap = cmap
     elif event.text == '3':
-        volume1.visible = not volume1.visible
+        CURRENTPOINT += JUMPSIZE
+        if CURRENTPOINT > len(cpos):
+            CURRENTPOINT = 0
+        PATHPOS = cpos[CURRENTPOINT]
+        #Get the visibility map that the UAV has seen
+        vol2 = np.zeros_like(vol1)
+        for k in range(0, PATHPOS):
+            vol2[max(xpath2[k]-sensor_range,0):min(xpath2[k]+sensor_range, xSize), 
+                max(ypath2[k]-sensor_range,0):min(ypath2[k]+sensor_range, ySize),
+                max(zpath2[k]-sensor_range,0):min(zpath2[k]+sensor_range, zSize)] = vol1[max(xpath2[k]-sensor_range,0):min(xpath2[k]+sensor_range, xSize), 
+                max(ypath2[k]-sensor_range,0):min(ypath2[k]+sensor_range, ySize),
+                max(zpath2[k]-sensor_range,0):min(zpath2[k]+sensor_range, zSize)]
+
+        #Show the path the UAV has flown so far
+        for k in range(0, PATHPOS):
+            vol2[xpath2[k],ypath2[k],zpath2[k]] = 10
+        vol2[xpath2[k]-2:xpath2[k]+2,ypath2[k]-2:ypath2[k]+2,zpath2[k]-2:zpath2[k]+2]=10
+        vol2[s1-2:s1+2, s2-2:s2+2, s3-2:s3+2] = 10
+        vol2[g1-2:g1+2, g2-2:g2+2, g3-2:g3+2] = 10
+        #Show the planned path from current position to goal
+        for k in range(len(cpath[CURRENTPOINT])):
+            vol2[cpath[CURRENTPOINT][k]] = 5 
+        volume1.set_data(vol2)
+        #axis.transform.reset()
+        axis.update()
     elif event.text == '4':
+        CURRENTPOINT -= JUMPSIZE
+        if CURRENTPOINT < 0:
+            CURRENTPOINT = len(cpos)
+        PATHPOS = cpos[CURRENTPOINT]
+        #Get the visibility map that the UAV has seen
+        vol2 = np.zeros_like(vol1)
+        for k in range(0, PATHPOS):
+            vol2[max(xpath2[k]-sensor_range,0):min(xpath2[k]+sensor_range, xSize), 
+                max(ypath2[k]-sensor_range,0):min(ypath2[k]+sensor_range, ySize),
+                max(zpath2[k]-sensor_range,0):min(zpath2[k]+sensor_range, zSize)] = vol1[max(xpath2[k]-sensor_range,0):min(xpath2[k]+sensor_range, xSize), 
+                max(ypath2[k]-sensor_range,0):min(ypath2[k]+sensor_range, ySize),
+                max(zpath2[k]-sensor_range,0):min(zpath2[k]+sensor_range, zSize)]
+
+        #Show the path the UAV has flown so far
+        for k in range(0, PATHPOS):
+            vol2[xpath2[k],ypath2[k],zpath2[k]] = 10
+        vol2[xpath2[k]-2:xpath2[k]+2,ypath2[k]-2:ypath2[k]+2,zpath2[k]-2:zpath2[k]+2]=10
+        vol2[s1-2:s1+2, s2-2:s2+2, s3-2:s3+2] = 10
+        vol2[g1-2:g1+2, g2-2:g2+2, g3-2:g3+2] = 10
+        #Show the planned path from current position to goal
+        for k in range(len(cpath[CURRENTPOINT])):
+            vol2[cpath[CURRENTPOINT][k]] = 2 
+        volume1.set_data(vol2)
+        #axis.transform.reset()   
+        axis.update() 
+    elif event.text == '5':
         if volume1.method in ['mip', 'iso']:
             cmap = opaque_cmap = next(opaque_cmaps)
         else:
